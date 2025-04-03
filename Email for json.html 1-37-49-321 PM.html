@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postmark JSON READER</title>
+    <style>
+        #tableBody, #dataTable {
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+    <h1>Select EXPORTED JSON Files</h1>
+    <h2>The following number should be matched to the last data number</h2>
+    <input type="file" id="fileInput" multiple>
+    <button id="copyButton" style="display: none;">Copy to Clipboard</button>
+    <p id="totalnumber"> found: 0</p>
+    <p id="rowCount">Rows found: 0</p>
+    <br>
+    <progress id="progressBar" value="0" max="100" style="width: 100%; display: none;"></progress>
+
+    <table id="dataTable" border="1">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Message ID</th>
+                <th>To (Email)</th>
+                <th>Subject</th>
+                <th>Received At</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const files = event.target.files;
+            if (files.length === 0) return;
+
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.display = 'block';
+            progressBar.value = 0;
+            progressBar.max = files.length;
+
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = "";
+            let rowCount = 0;
+            const fragment = document.createDocumentFragment();
+
+            let filesProcessed = 0;
+
+            Array.from(files).forEach((file, fileIndex) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const jsonData = JSON.parse(e.target.result);
+                        if (!Array.isArray(jsonData.Messages)) throw new Error(`Invalid JSON structure in ${file.name}`);
+                        document.getElementById('totalnumber').textContent = `Total emails sent from Postmark:` +  jsonData.TotalCount;
+                        jsonData.Messages.forEach((message) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${++rowCount}</td>
+                                <td>${message.MessageID || "N/A"}</td>
+                                <td>${message.To?.[0]?.Email || "N/A"}</td>
+                                <td>${message.Subject || "N/A"}</td>
+                                <td>${message.ReceivedAt || "N/A"}</td>
+                                <td>${message.Status || "N/A"}</td>
+                            `;
+                            fragment.appendChild(row);
+                        });
+                        document.getElementById('rowCount').textContent = `Imported Rows: ${rowCount}`;
+                    } catch (error) {
+                        console.error(error);
+                        alert(`Error processing ${file.name}: ${error.message}`);
+                    }
+
+                    filesProcessed++;
+                    progressBar.value = filesProcessed;
+
+                    if (filesProcessed === files.length) {
+                        tableBody.appendChild(fragment);
+                        progressBar.style.display = 'none';
+                        document.getElementById('copyButton').style.display = 'block';
+                    }
+                };
+                reader.readAsText(file);
+            });
+        });
+
+        document.getElementById('copyButton').addEventListener('click', function() {
+            const table = document.getElementById('dataTable');
+            let text = "";
+
+            // Add Headers
+            let headers = [];
+            for (let th of table.tHead.rows[0].cells) {
+                headers.push(th.innerText);
+            }
+            text += headers.join("\t") + "\n";
+
+            // Add Data
+            for (let row of table.tBodies[0].rows) {
+                let rowData = [];
+                for (let cell of row.cells) {
+                    rowData.push(cell.innerText);
+                }
+                text += rowData.join("\t") + "\n";
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Table copied to clipboard!");
+            }).catch(err => {
+                console.error("Failed to copy: ", err);
+            });
+        });
+    </script>
+</body>
+</html>

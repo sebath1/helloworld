@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Encode HTML</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
+        button { padding: 10px; }
+        pre { background: #f4f4f4; padding: 10px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+    <h2>Base64 Encode HTML</h2>
+    
+    <label for="htmlInput">Enter HTML:</label>
+    <textarea id="htmlInput" placeholder="<html><body>Hello</body></html>"></textarea>
+    
+    <button onclick="encodeHTML()">Encode to Base64</button>
+    
+    <h3>Base64 Output:</h3>
+    <pre id="output"></pre>
+
+    <script>
+        function encodeHTML() {
+            let htmlContent = document.getElementById("htmlInput").value;
+            let encoded = btoa(unescape(encodeURIComponent(htmlContent)));  // Encode HTML to Base64
+            document.getElementById("output").textContent = encoded;
+        }
+    </script>
+
+</body>
+</html>

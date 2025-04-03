@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read JSON Files for Postmark</title>
+    <style>
+#jsontable {
+    border-collapse: collapse;
+}
+
+    </style>
+</head>
+<body>
+    <h1>Postmark Readers for Solutions Team</h1>
+    <input type="file" id="fileInput" multiple>
+
+    <table id="jsontable" border="0">
+        <thead>
+            <tr>
+                <th>Message ID</th>
+                <th>To (Email)</th>
+                <th width="40%">Subject</th>
+                <th>Received At</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const files = event.target.files;
+            
+            // Clear previous data in the table
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = "";
+
+            // Loop through each selected file
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        // Parse the JSON content
+                        const jsonData = JSON.parse(e.target.result);
+
+                        // Display the content in the table
+                        jsonData.Messages.forEach(message => {
+                            const row = `<tr>
+                                <td>${message.MessageID}</td>
+                                <td>${message.To[0]?.Email || "N/A"}</td>
+                                <td>${message.Subject}</td>
+                                <td>${message.ReceivedAt}</td>
+                                <td>${message.Status}</td>
+                            </tr>`;
+                            tableBody.innerHTML += row;
+                        });
+                    } catch (error) {
+                        alert("Invalid JSON file: " + file.name);
+                    }
+                };
+                reader.readAsText(file);
+            });
+        });
+    </script>
+</body>
+</html>
