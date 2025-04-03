@@ -1,0 +1,28 @@
+<article>
+    <h1>RESTful API</h1>
+    <h2>Studio/VE Documentation</h2>
+    <p class="articleContent">The RESTful API provides the ability to facilitate a data exchange by calling a specific API Command to create or retrieve data using secure credentials at the tenant level. The APIs can be called from any third-party application that can be used as an origination point for incoming data or as a destination point for outgoing data. Data can include profile and registration as well as event activities.</p>
+    <p class="articleContent">The API is called via a secure HTTPS request. Each request must supply the authentication credentials assigned. Only requests with valid credentials will be processed. These credentials identify the caller and provide access only to a specific customer area.</p>
+    <p class="articleContent">API operations to be performed are specified using specific parameters. More than one parameter may be specified, allowing the caller to perform multiple steps for each transaction. Parameters are evaluated in order from left to right. Each parameter provides for a different set of data elements to be supplied. Data values may be shared among multiple parameters and API Calls.</p>
+    <p class="articleContent">The API returns results in specific formats. These formats allow the developer to choose what is most easily consumed. Most return formats are XML-based, but there are additional parameters that can HTTP URL-encoded and also text-based. Results contain a header, indicating the overall success of the call, including textual diagnostic, the number of calls successfully processed, and the number of calls that resulted in an error. Each call then outputs a recap section of its execution, indicating the parameter processing result, and textual diagnostic. Error codes of zero (0) indicate success (no error).</p>
+    <p class="articleContent">In addition to the API Call recap, data elements are output for each call indicating the return values of the operation. The format of the results depends on the result format requested. For URL-encoded, calls, these are listed as a string of HTTP parameter names and values. They are listed as a header line for text, followed by a values line with each field separated by commas. For XML, they are listed as child nodes of the response. Example output is included for each in the respective APIs documentation.</p>
+    <h2>Prerequisites</h2>
+    <ul>
+        <li>
+            Authorization credentials
+            <ul>
+                <li>These credentials are provided by your account representative.</li>
+                <li>API Activation specific to data exchange needs (User, Activity, Event, Sessions)</li>
+            </ul>
+        </li>
+    </ul>
+    <p class="marginTop">
+        <strong>Notes:</strong>
+    </p>
+    <ul>
+        <li>Only authorized users may make calls to the API.</li>
+        <li>These credentials restrict activity to a pre-defined Tenant area only.</li>
+        <li>These credentials should not be shared with any other unauthorized party and the credentials must be supplied with each call to the API.</li>
+    </ul>
+    <p class="articleContent"><strong>Note: </strong>The format of the APAC Data Center is: https://apac.onlinexperiences.com.</p>
+</article>
